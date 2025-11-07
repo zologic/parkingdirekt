@@ -138,14 +138,14 @@ export default function SuperAdminControlCenter() {
           <div className="fixed inset-y-0 left-0 flex flex-col w-64 bg-white">
             <div className="flex items-center justify-between h-16 px-4 border-b">
               <div className="flex items-center">
-                <CogIcon className="h-8 w-8 text-primary-600" />
+                <Settings className="h-8 w-8 text-primary-600" />
                 <span className="ml-2 text-xl font-semibold text-gray-900">Control Center</span>
               </div>
               <button
                 onClick={() => setSidebarOpen(false)}
                 className="text-gray-400 hover:text-gray-500"
               >
-                <XIcon className="h-6 w-6" />
+                <X className="h-6 w-6" />
               </button>
             </div>
 
