@@ -122,7 +122,7 @@ model AdminAuditLog {
   metadata    String?  // Additional context
   ipAddress   String?
   userAgent   String?
-  environment String   @default('production')
+  environment String   @default("production")
   createdAt   DateTime @default(now())
 
   admin       User     @relation(fields: [adminId], references: [id])
@@ -197,7 +197,7 @@ model FeatureFlag {
   enabled     Boolean  @default(true)
   rolloutPercentage Int @default(100)
   conditions  String?  // JSON for targeting rules
-  environment String   @default('production')
+  environment String   @default("production")
   updatedBy   String?
   updatedAt   DateTime @updatedAt
   createdAt   DateTime @default(now())
@@ -216,7 +216,7 @@ model PlatformRevenue {
   commissionPercent Decimal
   commissionAmount  Decimal
   ownerAmount       Decimal
-  currency          String   @default('EUR')
+  currency          String   @default("EUR")
   paymentMethod     String   // 'stripe' | 'paypal' | 'bank_transfer'
   status            String   // 'pending' | 'completed' | 'failed' | 'refunded'
   metadata          String?  // JSON for additional data
@@ -234,7 +234,7 @@ model SystemHealthMetric {
   metricType  String   // 'uptime' | 'response_time' | 'error_rate' | 'active_users'
   value       Float
   unit        String   // 'percentage' | 'milliseconds' | 'count'
-  environment String   @default('production')
+  environment String   @default("production")
   timestamp   DateTime @default(now())
 
   @@index([metricType, timestamp])
@@ -265,7 +265,7 @@ model Booking {
   endTime     DateTime
   status      String   // 'active' | 'completed' | 'cancelled' | 'overstay'
   amount      Decimal
-  currency    String   @default('EUR')
+  currency    String   @default("EUR")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
