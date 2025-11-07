@@ -144,7 +144,7 @@ export default function Dashboard({ environment }: DashboardProps) {
 
             <button className="relative block w-full p-4 border-2 border-gray-300 rounded-lg hover:border-primary-500 focus:outline-none">
               <span className="absolute inset-0 flex items-center justify-center">
-                <UsersIcon className="h-8 w-8 text-gray-400" />
+                <Users className="h-8 w-8 text-gray-400" />
               </span>
               <span className="sr-only">User Management</span>
               <div className="mt-8 text-center">
