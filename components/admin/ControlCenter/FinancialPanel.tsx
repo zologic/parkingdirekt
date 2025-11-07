@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { CurrencyDollarIcon, CreditCardIcon } from '@heroicons/react/outline'
+import { DollarSign, CreditCard } from 'lucide-react'
 
 interface FinancialSettings {
   [key: string]: {
