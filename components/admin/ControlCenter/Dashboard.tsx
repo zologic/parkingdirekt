@@ -134,7 +134,7 @@ export default function Dashboard({ environment }: DashboardProps) {
           <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <button className="relative block w-full p-4 border-2 border-gray-300 rounded-lg hover:border-primary-500 focus:outline-none">
               <span className="absolute inset-0 flex items-center justify-center">
-                <ChartBarIcon className="h-8 w-8 text-gray-400" />
+                <BarChart3 className="h-8 w-8 text-gray-400" />
               </span>
               <span className="sr-only">View Revenue</span>
               <div className="mt-8 text-center">
