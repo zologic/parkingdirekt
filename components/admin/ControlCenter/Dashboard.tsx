@@ -177,7 +177,7 @@ export default function Dashboard({ environment }: DashboardProps) {
                     <div className="flex items-center space-x-3">
                       <div className="flex-shrink-0">
                         <div className="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center">
-                          <ChartBarIcon className="h-4 w-4 text-primary-600" />
+                          <BarChart3 className="h-4 w-4 text-primary-600" />
                         </div>
                       </div>
                       <div className="flex-1 min-w-0">
