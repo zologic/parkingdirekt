@@ -239,7 +239,7 @@ export default function SuperAdminControlCenter() {
                       onClick={handleSignOut}
                       className="text-gray-400 hover:text-gray-500 focus:outline-none"
                     >
-                      <LogoutIcon className="h-5 w-5" />
+                      <LogOut className="h-5 w-5" />
                     </button>
                   </div>
                 </div>
