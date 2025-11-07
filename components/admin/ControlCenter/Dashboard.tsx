@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { ChartBarIcon, CurrencyDollarIcon, UsersIcon, ExclamationTriangleIcon } from '@heroicons/react/outline'
+import { BarChart3, DollarSign, Users, AlertTriangle } from 'lucide-react'
 
 interface DashboardProps {
   environment: string
@@ -65,28 +65,28 @@ export default function Dashboard({ environment }: DashboardProps) {
     {
       name: 'Total Bookings',
       value: stats?.overview.totalBookings || 0,
-      icon: ChartBarIcon,
+      icon: BarChart3,
       change: '+12%',
       changeType: 'positive'
     },
     {
       name: 'Active Bookings',
       value: stats?.overview.activeBookings || 0,
-      icon: UsersIcon,
+      icon: Users,
       change: '+5%',
       changeType: 'positive'
     },
     {
       name: 'Total Revenue',
       value: `€${stats?.overview.totalRevenue?.toFixed(2) || '0.00'}`,
-      icon: CurrencyDollarIcon,
+      icon: DollarSign,
       change: '+18%',
       changeType: 'positive'
     },
     {
       name: 'Recent Errors',
       value: stats?.overview.recentErrors || 0,
-      icon: ExclamationTriangleIcon,
+      icon: AlertTriangle,
       change: '-8%',
       changeType: 'negative'
     }
