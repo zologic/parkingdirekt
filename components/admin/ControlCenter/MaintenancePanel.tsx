@@ -88,7 +88,7 @@ export default function MaintenancePanel({ environment }: MaintenancePanelProps)
                 Manage system maintenance mode and emergency controls.
               </p>
             </div>
-            <ServerIcon className="h-8 w-8 text-warning-500" />
+            <Server className="h-8 w-8 text-warning-500" />
           </div>
 
           <div className="mt-6 space-y-6">
@@ -164,7 +164,7 @@ export default function MaintenancePanel({ environment }: MaintenancePanelProps)
                 Manage feature rollouts and experimental features.
               </p>
             </div>
-            <FlagIcon className="h-8 w-8 text-primary-500" />
+            <Flag className="h-8 w-8 text-primary-500" />
           </div>
 
           <div className="mt-6">
