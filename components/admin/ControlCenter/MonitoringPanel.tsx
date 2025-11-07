@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { EyeIcon, DocumentDownloadIcon } from '@heroicons/react/outline'
+import { Eye, Download } from 'lucide-react'
 
 interface MonitoringPanelProps {
   environment: string
