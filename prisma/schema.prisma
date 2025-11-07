@@ -80,7 +80,7 @@ model SystemConfig {
   type        String   // 'string' | 'number' | 'boolean' | 'json'
   description String?
   isSecret    Boolean  @default(false) // For encryption
-  environment String   @default('production') // 'production' | 'staging' | 'development'
+  environment String   @default("production") // "production" | "staging" | "development"
   updatedBy   String?
   updatedAt   DateTime @updatedAt
   createdAt   DateTime @default(now())
@@ -97,7 +97,7 @@ model IntegrationSettings {
   name        String   // 'stripe', 'mapbox', 'sendgrid', 'webhook', etc.
   key         String   // 'api_key', 'secret_key', 'webhook_url', etc.
   value       String   // AES-256 encrypted
-  environment String   @default('production')
+  environment String   @default("production")
   isActive    Boolean  @default(true)
   description String?
   updatedBy   String?
