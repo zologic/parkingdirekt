@@ -123,8 +123,8 @@ export default function FinancialPanel({ environment }: FinancialPanelProps) {
               </p>
             </div>
             <div className="flex items-center space-x-2">
-              <CurrencyDollarIcon className="h-8 w-8 text-success-500" />
-              <CreditCardIcon className="h-8 w-8 text-primary-500" />
+              <DollarSign className="h-8 w-8 text-success-500" />
+              <CreditCard className="h-8 w-8 text-primary-500" />
             </div>
           </div>
 
@@ -153,7 +153,7 @@ export default function FinancialPanel({ environment }: FinancialPanelProps) {
 
             {Object.keys(settings).length === 0 && (
               <div className="text-center py-8">
-                <CurrencyDollarIcon className="mx-auto h-12 w-12 text-gray-400" />
+                <DollarSign className="mx-auto h-12 w-12 text-gray-400" />
                 <h3 className="mt-2 text-sm font-medium text-gray-900">No financial settings found</h3>
                 <p className="mt-1 text-sm text-gray-500">Financial settings will appear here once configured.</p>
               </div>
