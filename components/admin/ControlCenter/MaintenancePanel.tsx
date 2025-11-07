@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { ServerIcon, FlagIcon } from '@heroicons/react/outline'
+import { Server, Flag } from 'lucide-react'
 
 interface MaintenancePanelProps {
   environment: string
