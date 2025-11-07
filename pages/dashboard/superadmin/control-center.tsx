@@ -188,7 +188,7 @@ export default function SuperAdminControlCenter() {
               className="lg:hidden px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500 lg:hidden"
               onClick={() => setSidebarOpen(true)}
             >
-              <MenuIcon className="h-6 w-6" />
+              <Menu className="h-6 w-6" />
             </button>
 
             <div className="flex-1 px-4 flex justify-between sm:px-6 lg:max-w-7xl lg:mx-auto lg:px-8">
