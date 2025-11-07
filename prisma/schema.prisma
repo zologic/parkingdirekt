@@ -1,0 +1,302 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  OWNER
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum SpaceType {
+  INDOOR
+  OUTDOOR
+  GARAGE
+  DRIVEWAY
+}
+
+enum VehicleType {
+  CAR
+  MOTORCYCLE
+  TRUCK
+  SUV
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum CommissionStatus {
+  PENDING
+  PROCESSED
+  PAID
+}
+
+model User {
+  id                String   @id @default(cuid())
+  email             String   @unique
+  name              String
+  passwordHash      String?  @map("password_hash")
+  role              UserRole @default(USER)
+  avatarUrl         String?  @map("avatar_url")
+  phone             String?
+  isActive          Boolean  @default(true) @map("is_active")
+  emailVerified     Boolean  @default(false) @map("email_verified")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  ownedSpaces       ParkingSpace[] @relation("SpaceOwner")
+  bookings          Booking[]
+  reviewsGiven      Review[]       @relation("ReviewBy")
+  reviewsReceived   Review[]       @relation("ReviewAbout")
+  messages          Message[]
+  notifications     Notification[]
+  paymentMethods    PaymentMethod[]
+  subscriptions     Subscription[]
+  referralCode      ReferralCode?
+  referralsMade     Referral[]     @relation("Referrer")
+  referralReceived  Referral[]     @relation("Referred")
+
+  @@map("users")
+}
+
+model ParkingSpace {
+  id                  String       @id @default(cuid())
+  ownerId             String       @map("owner_id")
+  title               String
+  description         String
+  address             String
+  latitude            Decimal
+  longitude           Decimal
+  photos              String[]
+  hourlyRate          Decimal      @map("hourly_rate")
+  dailyRate           Decimal?     @map("daily_rate")
+  monthlyRate         Decimal?     @map("monthly_rate")
+  spaceType           SpaceType    @map("space_type")
+  vehicleTypes        VehicleType[]
+  sizeDimensions      String?      @map("size_dimensions")
+  accessInstructions  String?      @map("access_instructions")
+  isActive            Boolean      @default(true) @map("is_active")
+  requiresApproval    Boolean      @default(false) @map("requires_approval")
+  qrCode              String?      @map("qr_code")
+  createdAt           DateTime     @default(now()) @map("created_at")
+  updatedAt           DateTime     @updatedAt @map("updated_at")
+
+  // Relations
+  owner               User         @relation("SpaceOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  availability        Availability[]
+  bookings            Booking[]
+  reviews             Review[]
+
+  @@map("parking_spaces")
+}
+
+model Availability {
+  id                String   @id @default(cuid())
+  parkingSpaceId    String   @map("parking_space_id")
+  date              DateTime
+  startTime         String   @map("start_time")
+  endTime           String   @map("end_time")
+  isAvailable       Boolean  @default(true) @map("is_available")
+  recurringPattern  String?  @map("recurring_pattern")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  parkingSpace      ParkingSpace @relation(fields: [parkingSpaceId], references: [id], onDelete: Cascade)
+
+  @@map("availability_schedule")
+}
+
+model Booking {
+  id                String        @id @default(cuid())
+  userId            String        @map("user_id")
+  parkingSpaceId    String        @map("parking_space_id")
+  startTime         DateTime      @map("start_time")
+  endTime           DateTime      @map("end_time")
+  totalPrice        Decimal       @map("total_price")
+  status            BookingStatus @default(PENDING)
+  qrCode            String?       @map("qr_code")
+  paymentIntentId   String?       @map("payment_intent_id")
+  createdAt         DateTime      @default(now()) @map("created_at")
+  updatedAt         DateTime      @updatedAt @map("updated_at")
+
+  // Relations
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parkingSpace      ParkingSpace  @relation(fields: [parkingSpaceId], references: [id], onDelete: Cascade)
+  payments          Payment[]
+  reviews           Review[]
+  notifications     Notification[]
+
+  @@map("bookings")
+}
+
+model Payment {
+  id                String        @id @default(cuid())
+  bookingId         String        @map("booking_id")
+  userId            String        @map("user_id")
+  amount            Decimal
+  status            PaymentStatus @default(PENDING)
+  stripePaymentId   String?       @map("stripe_payment_id")
+  createdAt         DateTime      @default(now()) @map("created_at")
+  updatedAt         DateTime      @updatedAt @map("updated_at")
+
+  // Relations
+  booking           Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+}
+
+model Review {
+  id            String   @id @default(cuid())
+  bookingId     String   @map("booking_id")
+  reviewerId    String   @map("reviewer_id")
+  revieweeId    String   @map("reviewee_id")
+  parkingSpaceId String? @map("parking_space_id")
+  rating        Int
+  comment       String?
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  booking       Booking      @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  reviewer      User         @relation("ReviewBy", fields: [reviewerId], references: [id], onDelete: Cascade)
+  reviewee      User         @relation("ReviewAbout", fields: [revieweeId], references: [id], onDelete: Cascade)
+  parkingSpace  ParkingSpace? @relation(fields: [parkingSpaceId], references: [id], onDelete: SetNull)
+
+  @@map("reviews")
+}
+
+model Commission {
+  id              String           @id @default(cuid())
+  bookingId       String           @map("booking_id")
+  platformAmount  Decimal          @map("platform_amount")
+  ownerAmount     Decimal          @map("owner_amount")
+  status          CommissionStatus @default(PENDING)
+  processedAt     DateTime?        @map("processed_at")
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+
+  // Relations
+  booking         Booking          @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@map("commissions")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  title     String
+  message   String
+  type      String
+  isRead    Boolean  @default(false) @map("is_read")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  senderId  String   @map("sender_id")
+  receiverId String  @map("receiver_id")
+  content   String
+  isRead    Boolean  @default(false) @map("is_read")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  sender    User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  receiver  User     @relation("User", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
+}
+
+model PaymentMethod {
+  id            String   @id @default(cuid())
+  userId        String   @map("user_id")
+  stripeMethodId String  @map("stripe_method_id")
+  type          String
+  last4         String?
+  brand         String?
+  isDefault     Boolean  @default(false) @map("is_default")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("payment_methods")
+}
+
+model Subscription {
+  id              String   @id @default(cuid())
+  userId          String   @map("user_id")
+  plan            String
+  status          String
+  currentPeriodStart DateTime @map("current_period_start")
+  currentPeriodEnd   DateTime @map("current_period_end")
+  stripeSubscriptionId String @map("stripe_subscription_id")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}
+
+model ReferralCode {
+  id              String   @id @default(cuid())
+  userId          String   @unique @map("user_id")
+  code            String   @unique
+  discountPercent Int      @map("discount_percent")
+  isActive        Boolean  @default(true) @map("is_active")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  // Relations
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  referrals       Referral[]
+
+  @@map("referral_codes")
+}
+
+model Referral {
+  id              String   @id @default(cuid())
+  referrerId      String   @map("referrer_id")
+  referredId      String   @map("referred_id")
+  referralCodeId  String   @map("referral_code_id")
+  status          String
+  completedAt     DateTime? @map("completed_at")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  // Relations
+  referrer        User     @relation("Referrer", fields: [referrerId], references: [id], onDelete: Cascade)
+  referred        User     @relation("Referred", fields: [referredId], references: [id], onDelete: Cascade)
+  referralCode    ReferralCode @relation(fields: [referralCodeId], references: [id], onDelete: Cascade)
+
+  @@map("referrals")
+}
