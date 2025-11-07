@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { MailIcon, PaperAirplaneIcon } from '@heroicons/react/outline'
+import { Mail, Send } from 'lucide-react'
 
 interface EmailPanelProps {
   environment: string
@@ -72,7 +72,7 @@ export default function EmailPanel({ environment }: EmailPanelProps) {
                 Manage SMTP settings and email delivery configuration.
               </p>
             </div>
-            <MailIcon className="h-8 w-8 text-primary-500" />
+            <Mail className="h-8 w-8 text-primary-500" />
           </div>
 
           <div className="mt-6 space-y-6">
@@ -204,7 +204,7 @@ export default function EmailPanel({ environment }: EmailPanelProps) {
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
                 ) : (
                   <>
-                    <PaperAirplaneIcon className="h-4 w-4 mr-2" />
+                    <Send className="h-4 w-4 mr-2" />
                     Send Test
                   </>
                 )}

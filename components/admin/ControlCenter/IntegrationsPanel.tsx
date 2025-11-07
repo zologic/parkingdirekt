@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { GlobeAltIcon, CheckCircleIcon, ExclamationTriangleIcon, RefreshIcon } from '@heroicons/react/outline'
+import { Globe, CheckCircle, AlertTriangle, RotateCw } from 'lucide-react'
 
 interface Integration {
   id: string
@@ -81,7 +81,7 @@ export default function IntegrationsPanel({ environment }: IntegrationsPanelProp
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
-                      <GlobeAltIcon className="h-6 w-6 text-gray-400" />
+                      <Globe className="h-6 w-6 text-gray-400" />
                     </div>
                     <div className="ml-4">
                       <h4 className="text-lg font-medium text-gray-900">
@@ -109,7 +109,7 @@ export default function IntegrationsPanel({ environment }: IntegrationsPanelProp
                       className="btn-outline btn-sm"
                     >
                       {testing === integration.name ? (
-                        <RefreshIcon className="animate-spin h-4 w-4" />
+                        <RotateCw className="animate-spin h-4 w-4" />
                       ) : (
                         'Test'
                       )}
@@ -122,7 +122,7 @@ export default function IntegrationsPanel({ environment }: IntegrationsPanelProp
 
           {integrations.length === 0 && (
             <li className="px-4 py-8 text-center">
-              <ExclamationTriangleIcon className="mx-auto h-12 w-12 text-gray-400" />
+              <AlertTriangle className="mx-auto h-12 w-12 text-gray-400" />
               <h3 className="mt-2 text-sm font-medium text-gray-900">No integrations found</h3>
               <p className="mt-1 text-sm text-gray-500">
                 Get started by adding your first external integration.
