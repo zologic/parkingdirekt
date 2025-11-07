@@ -160,7 +160,7 @@ export default function MonitoringPanel({ environment }: MonitoringPanelProps) {
               onClick={exportLogs}
               className="btn-outline"
             >
-              <DocumentDownloadIcon className="h-4 w-4 mr-2" />
+              <Download className="h-4 w-4 mr-2" />
               Export CSV
             </button>
           </div>
