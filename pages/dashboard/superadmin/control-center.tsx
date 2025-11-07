@@ -3,18 +3,18 @@ import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import {
-  ChartBarIcon,
-  CogIcon,
-  GlobeAltIcon,
-  CreditCardIcon,
-  MailIcon,
-  ShieldCheckIcon,
-  ServerIcon,
-  EyeIcon,
-  LogoutIcon,
-  MenuIcon,
-  XIcon
-} from '@heroicons/react/outline'
+  BarChart3,
+  Settings,
+  Globe,
+  CreditCard,
+  Mail,
+  ShieldCheck,
+  Server,
+  Eye,
+  LogOut,
+  Menu,
+  X
+} from 'lucide-react'
 
 // Import components we'll create
 import TabNavigation from '@/components/admin/ControlCenter/TabNavigation'
@@ -27,13 +27,13 @@ import MaintenancePanel from '@/components/admin/ControlCenter/MaintenancePanel'
 import MonitoringPanel from '@/components/admin/ControlCenter/MonitoringPanel'
 
 const tabs = [
-  { id: 'dashboard', name: 'Dashboard', icon: ChartBarIcon },
-  { id: 'integrations', name: 'Integrations', icon: GlobeAltIcon },
-  { id: 'financial', name: 'Financial', icon: CreditCardIcon },
-  { id: 'email', name: 'Email', icon: MailIcon },
-  { id: 'api', name: 'API', icon: ShieldCheckIcon },
-  { id: 'maintenance', name: 'Maintenance', icon: ServerIcon },
-  { id: 'monitoring', name: 'Monitoring', icon: EyeIcon },
+  { id: 'dashboard', name: 'Dashboard', icon: BarChart3 },
+  { id: 'integrations', name: 'Integrations', icon: Globe },
+  { id: 'financial', name: 'Financial', icon: CreditCard },
+  { id: 'email', name: 'Email', icon: Mail },
+  { id: 'api', name: 'API', icon: ShieldCheck },
+  { id: 'maintenance', name: 'Maintenance', icon: Server },
+  { id: 'monitoring', name: 'Monitoring', icon: Eye },
 ]
 
 export default function SuperAdminControlCenter() {
@@ -89,7 +89,7 @@ export default function SuperAdminControlCenter() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <ShieldCheckIcon className="mx-auto h-12 w-12 text-danger-500" />
+          <ShieldCheck className="mx-auto h-12 w-12 text-danger-500" />
           <h1 className="mt-4 text-xl font-semibold text-gray-900">Access Denied</h1>
           <p className="mt-2 text-gray-600">You don't have permission to access this page.</p>
           <button

@@ -174,7 +174,7 @@ export default function MonitoringPanel({ environment }: MonitoringPanelProps) {
             <h3 className="text-lg leading-6 font-medium text-gray-900">
               {logTypes.find(t => t.id === activeLogTab)?.name} ({logs.length})
             </h3>
-            <EyeIcon className="h-8 w-8 text-primary-500" />
+            <Eye className="h-8 w-8 text-primary-500" />
           </div>
 
           {loading ? (
@@ -239,7 +239,7 @@ export default function MonitoringPanel({ environment }: MonitoringPanelProps) {
 
               {logs.length === 0 && (
                 <div className="text-center py-8">
-                  <EyeIcon className="mx-auto h-12 w-12 text-gray-400" />
+                  <Eye className="mx-auto h-12 w-12 text-gray-400" />
                   <h3 className="mt-2 text-sm font-medium text-gray-900">No logs found</h3>
                   <p className="mt-1 text-sm text-gray-500">
                     {filters.search || filters.startDate || filters.endDate
