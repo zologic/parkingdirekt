@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { ShieldCheckIcon, ExclamationTriangleIcon } from '@heroicons/react/outline'
+import { ShieldCheck, AlertTriangle } from 'lucide-react'
 
 interface ApiPanelProps {
   environment: string
