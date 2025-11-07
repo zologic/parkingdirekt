@@ -43,7 +43,7 @@ export default function ApiPanel({ environment }: ApiPanelProps) {
                 Configure API access controls and rate limiting policies.
               </p>
             </div>
-            <ShieldCheckIcon className="h-8 w-8 text-primary-500" />
+            <ShieldCheck className="h-8 w-8 text-primary-500" />
           </div>
 
           <div className="mt-6 space-y-6">
