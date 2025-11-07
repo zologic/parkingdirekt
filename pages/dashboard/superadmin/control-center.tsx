@@ -164,7 +164,7 @@ export default function SuperAdminControlCenter() {
         <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
           <div className="flex flex-col flex-grow bg-white border-r border-gray-200 pt-5 pb-4 overflow-y-auto">
             <div className="flex items-center flex-shrink-0 px-4 mb-8">
-              <CogIcon className="h-8 w-8 text-primary-600" />
+              <Settings className="h-8 w-8 text-primary-600" />
               <span className="ml-2 text-xl font-semibold text-gray-900">Control Center</span>
             </div>
 
