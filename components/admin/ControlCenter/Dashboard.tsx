@@ -51,7 +51,7 @@ export default function Dashboard({ environment }: DashboardProps) {
     return (
       <div className="rounded-md bg-danger-50 p-4">
         <div className="flex">
-          <ExclamationTriangleIcon className="h-5 w-5 text-danger-400" />
+          <AlertTriangle className="h-5 w-5 text-danger-400" />
           <div className="ml-3">
             <h3 className="text-sm font-medium text-danger-800">Error</h3>
             <div className="mt-2 text-sm text-danger-700">{error}</div>
