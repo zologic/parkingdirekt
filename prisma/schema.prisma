@@ -1,0 +1,275 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  role          String    @default("USER") // "USER" | "ADMIN" | "SUPER_ADMIN"
+  isActive      Boolean   @default(true)
+  lastLoginAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts      Account[]
+  sessions      Session[]
+  auditLogs     AdminAuditLog[]
+  updatedConfigs SystemConfig[] @relation("ConfigUpdater")
+  updatedIntegrations IntegrationSettings[] @relation("IntegrationUpdater")
+  featureFlags  FeatureFlag[]
+
+  @@map("users")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// Core Configuration Management
+model SystemConfig {
+  id          String   @id @default(cuid())
+  category    String   // 'financial' | 'automation' | 'platform' | 'email' | 'api' | 'maintenance' | 'feature'
+  key         String
+  value       String   // JSON string for complex values, plain string for simple
+  type        String   // 'string' | 'number' | 'boolean' | 'json'
+  description String?
+  isSecret    Boolean  @default(false) // For encryption
+  environment String   @default('production') // 'production' | 'staging' | 'development'
+  updatedBy   String?
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+
+  updater User? @relation("ConfigUpdater", fields: [updatedBy], references: [id])
+
+  @@unique([category, key, environment])
+  @@map("system_configs")
+}
+
+// External Integrations (encrypted storage)
+model IntegrationSettings {
+  id          String   @id @default(cuid())
+  name        String   // 'stripe', 'mapbox', 'sendgrid', 'webhook', etc.
+  key         String   // 'api_key', 'secret_key', 'webhook_url', etc.
+  value       String   // AES-256 encrypted
+  environment String   @default('production')
+  isActive    Boolean  @default(true)
+  description String?
+  updatedBy   String?
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+
+  updater User? @relation("IntegrationUpdater", fields: [updatedBy], references: [id])
+
+  @@unique([name, key, environment])
+  @@map("integration_settings")
+}
+
+// Comprehensive Audit Logging
+model AdminAuditLog {
+  id          String   @id @default(cuid())
+  adminId     String
+  action      String   // 'create', 'update', 'delete', 'toggle', 'test'
+  category    String   // 'integration', 'config', 'maintenance', 'feature'
+  target      String   // What was modified
+  oldValue    String?  // JSON string for complex objects
+  newValue    String?  // JSON string for complex objects
+  metadata    String?  // Additional context
+  ipAddress   String?
+  userAgent   String?
+  environment String   @default('production')
+  createdAt   DateTime @default(now())
+
+  admin       User     @relation(fields: [adminId], references: [id])
+
+  @@index([adminId, createdAt])
+  @@index([category, createdAt])
+  @@map("admin_audit_logs")
+}
+
+// Email Delivery Tracking
+model EmailDeliveryLog {
+  id          String   @id @default(cuid())
+  to          String
+  subject     String
+  provider    String   // 'smtp' | 'sendgrid' | 'ses' | 'resend'
+  status      String   // 'sent' | 'delivered' | 'bounced' | 'failed' | 'retrying'
+  error       String?
+  messageId   String?  // Provider message ID
+  retryCount  Int      @default(0)
+  sentAt      DateTime @default(now())
+  deliveredAt DateTime?
+  metadata    String?  // JSON for additional data
+
+  @@index([status, sentAt])
+  @@index([to, sentAt])
+  @@map("email_delivery_logs")
+}
+
+// API Rate Limiting & Monitoring
+model ApiRateLimitLog {
+  id          String   @id @default(cuid())
+  identifier  String   // User ID or IP address
+  endpoint    String
+  method      String
+  statusCode  Int
+  blocked     Boolean  @default(false)
+  limitType   String   // 'user' | 'ip' | 'global'
+  requestCount Int
+  windowStart DateTime
+  createdAt   DateTime @default(now())
+
+  @@index([identifier, createdAt])
+  @@index([blocked, createdAt])
+  @@map("api_rate_limit_logs")
+}
+
+// Webhook Delivery Tracking
+model WebhookDeliveryLog {
+  id          String   @id @default(cuid())
+  webhookUrl  String
+  eventType   String
+  payload     String   // JSON
+  responseCode Int?
+  response    String?
+  status      String   // 'pending' | 'delivered' | 'failed' | 'retrying'
+  retryCount  Int      @default(0)
+  nextRetryAt DateTime?
+  createdAt   DateTime @default(now())
+  deliveredAt DateTime?
+
+  @@index([status, createdAt])
+  @@index([eventType, createdAt])
+  @@map("webhook_delivery_logs")
+}
+
+// Feature Flag Management
+model FeatureFlag {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  name        String
+  description String?
+  enabled     Boolean  @default(true)
+  rolloutPercentage Int @default(100)
+  conditions  String?  // JSON for targeting rules
+  environment String   @default('production')
+  updatedBy   String?
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+
+  updater User? @relation(fields: [updatedBy], references: [id])
+
+  @@map("feature_flags")
+}
+
+// Platform Revenue Tracking (enhanced)
+model PlatformRevenue {
+  id                String   @id @default(cuid())
+  transactionId     String   @unique
+  bookingId         String?
+  amount            Decimal
+  commissionPercent Decimal
+  commissionAmount  Decimal
+  ownerAmount       Decimal
+  currency          String   @default('EUR')
+  paymentMethod     String   // 'stripe' | 'paypal' | 'bank_transfer'
+  status            String   // 'pending' | 'completed' | 'failed' | 'refunded'
+  metadata          String?  // JSON for additional data
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([status, createdAt])
+  @@index([bookingId])
+  @@map("platform_revenue")
+}
+
+// System Health Metrics
+model SystemHealthMetric {
+  id          String   @id @default(cuid())
+  metricType  String   // 'uptime' | 'response_time' | 'error_rate' | 'active_users'
+  value       Float
+  unit        String   // 'percentage' | 'milliseconds' | 'count'
+  environment String   @default('production')
+  timestamp   DateTime @default(now())
+
+  @@index([metricType, timestamp])
+  @@index([environment, timestamp])
+  @@map("system_health_metrics")
+}
+
+// Parking related models (basic structure for integration)
+model ParkingLocation {
+  id          String   @id @default(cuid())
+  name        String
+  address     String
+  latitude    Float
+  longitude   Float
+  totalSpots  Int
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("parking_locations")
+}
+
+model Booking {
+  id          String   @id @default(cuid())
+  userId      String
+  locationId  String
+  startTime   DateTime
+  endTime     DateTime
+  status      String   // 'active' | 'completed' | 'cancelled' | 'overstay'
+  amount      Decimal
+  currency    String   @default('EUR')
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId, status])
+  @@index([locationId, startTime])
+  @@map("bookings")
+}
